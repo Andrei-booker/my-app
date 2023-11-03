@@ -3,36 +3,61 @@ import React, {Component} from 'react';
 import './todo-list-item.css';
 
 export default class TodoListItem extends Component {
-  
-  onLabelClick = () => {
-    console.log(`Done ${this.props.label}`)
-  }
+	state = {
+		done: false,
+    important: false,
+	};
 
-  render() {
-    const { label, important = false } = this.props;
-    const style = {
-      color: important ? 'steelblue' : 'black',
-      fontWeight: important ? 'bold' : 'normal',
-    }
+	onLabelClick = () => {
+		this.setState(({done}) => {
+      return {
+        done: !done,
+      };
+    });
+	};
 
-    return (
-      <span className='todo-list-item'>
-        <span className='todo-list-item-label' style={style}
-        onClick={this.onLabelClick}>
-          {label}
-        </span>
+  onMarkImportant = () => {
+    this.setState(({important}) => {
+      return {
+        important: !important,
+      };
+    });
+  };
 
-        <button
-          type='button'
-          className='btn btn-outline-success btn-sm float-right'
-        >
-          <i className='fa fa-exclamation' />
-        </button>
+	render() {
+		const { label, onDeleted } = this.props
+    const { done, important = false } = this.state
 
-        <button type='button' className='btn btn-outline-danger btn-sm float-right'>
-          <i className='fa fa-trash-o' />
-        </button>
-      </span>
-    )
-  }
+    let className = 'todo-list-item';
+    if(done) className += ' done';
+
+    if(important) className += ' important'
+
+		return (
+			<span className={className}>
+				<span
+					className='todo-list-item-label'
+					onClick={this.onLabelClick}
+				>
+					{label}
+				</span>
+
+				<button
+					type='button'
+					className='btn btn-outline-success btn-sm float-right'
+          onClick={this.onMarkImportant}
+				>
+					<i className='fa fa-exclamation' />
+				</button>
+
+				<button
+					type='button'
+					className='btn btn-outline-danger btn-sm float-right'
+					onClick={onDeleted}
+				>
+					<i className='fa fa-trash-o' />
+				</button>
+			</span>
+		)
+	}
 }
